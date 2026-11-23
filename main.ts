@@ -30,6 +30,10 @@ if (data.length < 33 || !data.subarray(0, 8).equals(PNG_MAGIC)) {
 
 // Validate dimensions from the IHDR chunk (width/height, big-endian uint32).
 // Bytes 12-15 must spell "IHDR"; width/height follow at 16 and 20.
+// The IHDR chunk's length field (bytes 8-11) must be exactly 13.
+if (data.readUInt32BE(8) !== 13) {
+  throw new Error("entry.png has a malformed IHDR chunk length");
+}
 if (data.subarray(12, 16).toString("ascii") !== "IHDR") {
   throw new Error("entry.png has no IHDR chunk");
 }
